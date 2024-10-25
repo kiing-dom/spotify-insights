@@ -5,12 +5,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class SpotifyApiClient {
-    
+
     private final WebClient webClient;
 
-    public SpotifyApiClient(WebClient webClient) {
-        this.webClient = webClient;
+    public SpotifyApiClient(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.baseUrl("https://api.spotify.com/v1").build();
     }
-
-    
 }
