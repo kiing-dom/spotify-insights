@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import com.kiing.spotsight.model.token.TokenResponse;
+
 import reactor.core.publisher.Mono;
 
 @Service
@@ -37,16 +39,12 @@ public class SpotifyAuthService {
             .header("Content-Type", "application/x-www-form-urlencoded")
             .bodyValue("grant_type=client_credentials")
             .retrieve()
-            .bodyToMono(String.class)
-            .map(this::parseAccessToken)
+            .bodyToMono(TokenResponse.class)
+            .map(TokenResponse::getAccessToken)
             .onErrorResume(WebClientResponseException.class, ex -> {
                 System.err.println("Error fetching access token: " + ex.getMessage());
                 return Mono.empty();
             });
             
-    }
-
-    private String parseAccessToken(String response) {
-
     }
 }
