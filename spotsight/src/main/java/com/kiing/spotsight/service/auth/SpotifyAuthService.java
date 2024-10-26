@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.kiing.spotsight.model.token.TokenResponse;
 
 import reactor.core.publisher.Mono;
@@ -15,6 +18,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class SpotifyAuthService {
     
+    private static final Logger logger = LoggerFactory.getLogger(SpotifyAuthService.class);
     private final WebClient webClient;
 
     @Value("${spotify.client.id}")
@@ -31,20 +35,16 @@ public class SpotifyAuthService {
     }
     
     public Mono<String> getAccessToken() {
-        String authHeader = "Basic " +  Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
-
+        logger.info("Preparing to retrieve access token from {}", tokenUrl);
         return webClient.post()
-            .uri(tokenUrl)
-            .header("Authorization", authHeader)
-            .header("Content-Type", "application/x-www-form-urlencoded")
-            .bodyValue("grant_type=client_credentials")
-            .retrieve()
-            .bodyToMono(TokenResponse.class)
-            .map(TokenResponse::getAccessToken)
-            .onErrorResume(WebClientResponseException.class, ex -> {
-                System.err.println("Error fetching access token: " + ex.getMessage());
-                return Mono.empty();
-            });
-            
+                .uri(tokenUrl) // Log the URL here
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .bodyValue("grant_type=client_credentials&client_id=" + clientId + "&client_secret=" + clientSecret)
+                .retrieve()
+                .bodyToMono(TokenResponse.class)
+                .doOnNext(uri -> logger.info("Using URI: {}", tokenUrl)) // Log the URI used
+                .map(TokenResponse::getAccessToken)
+                .doOnError(e -> logger.error("Error retrieving access token: {}", e.getMessage()));
     }
+    
 }
