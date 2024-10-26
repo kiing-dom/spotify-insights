@@ -1,23 +1,25 @@
 package com.kiing.spotsight.service.auth;
 
+import com.kiing.spotsight.model.token.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
-import com.kiing.spotsight.model.token.TokenResponse;
-
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class SpotifyAuthServiceTest {
-    
+class SpotifyAuthServiceTest {
+
     private SpotifyAuthService spotifyAuthService;
 
     @Value("${spotify.client.id}")
     private String clientId;
-    
+
     @Value("${spotify.client.secret}")
     private String clientSecret;
 
@@ -28,22 +30,37 @@ public class SpotifyAuthServiceTest {
 
     @BeforeEach
     public void setUp() {
+        // Create mocks for WebClient and its nested types
         WebClient webClientMock = mock(WebClient.class);
         WebClient.RequestBodyUriSpec uriSpecMock = mock(WebClient.RequestBodyUriSpec.class);
         WebClient.RequestHeadersSpec<?> headersSpecMock = mock(WebClient.RequestHeadersSpec.class);
         WebClient.ResponseSpec responseSpecMock = mock(WebClient.ResponseSpec.class);
 
-        // configure mocks for web client methods
-        when(webClientMock.post()).thenReturn(uriSpecMock);
-        when(uriSpecMock.uri(tokenUrl)).thenReturn(uriSpecMock);
-        when(uriSpecMock.header(any(), any())).thenReturn(uriSpecMock);
-        when(uriSpecMock.bodyValue(any())).thenReturn(headersSpecMock);
-        when(headersSpecMock.retrieve()).thenReturn(responseSpecMock);
+        // Set up method call chain with doReturn to avoid issues with generics
+        doReturn(uriSpecMock).when(webClientMock).post();
+        doReturn(uriSpecMock).when(uriSpecMock).uri(tokenUrl);
+        doReturn(uriSpecMock).when(uriSpecMock).header(any(), any());
+        doReturn(headersSpecMock).when(uriSpecMock).bodyValue(any());
+        doReturn(responseSpecMock).when(headersSpecMock).retrieve();
 
-        // mock the response of WebClient to return a TokenResponse object
+        // Mock the response to return a TokenResponse object with a mocked access token
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken("mock-access-token");
         tokenResponse.setTokenType("Bearer");
         tokenResponse.setExpiresIn(3600);
+        doReturn(Mono.just(tokenResponse)).when(responseSpecMock).bodyToMono(TokenResponse.class);
+
+        // Mock WebClient.Builder and provide the mock WebClient
+        webClientBuilder = mock(WebClient.Builder.class);
+        doReturn(webClientMock).when(webClientBuilder).build();
+
+        // Initialize SpotifyAuthService with the mocked WebClient builder
+        spotifyAuthService = new SpotifyAuthService(webClientBuilder);
+    }
+
+    @Test
+    void testGetAccessToken() {
+        String accessToken = spotifyAuthService.getAccessToken().block();  // Blocking to get the result for testing
+        assertEquals("mock-access-token", accessToken);  // Verify that the access token matches expected value
     }
 }
