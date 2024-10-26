@@ -17,7 +17,7 @@ public class SpotifyAuthService {
     }
     
     public Mono<String> getAccessToken(String clientId, String clientSecret) {
-        String auth = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret.getBytes()));
+        String auth = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
 
         return webClient.post()
             .uri("/api/token")
@@ -29,6 +29,6 @@ public class SpotifyAuthService {
     }
 
     private String parseAccessToken(String response) {
-        
+
     }
 }
