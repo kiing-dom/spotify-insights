@@ -1,78 +1,113 @@
 package com.kiing.spotsight.service.auth;
 
-import com.kiing.spotsight.model.token.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
+import com.kiing.spotsight.model.token.TokenResponse;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class SpotifyAuthServiceTest {
+
     private static final Logger logger = LoggerFactory.getLogger(SpotifyAuthServiceTest.class);
-    
-    private SpotifyAuthService spotifyAuthService;
 
-    @Value("${spotify.client.id}")
-    private String clientId;
-
-    @Value("${spotify.client.secret}")
-    private String clientSecret;
-
-    @Value("${spotify.auth.url}")
-    private String tokenUrl;
-
+    @Mock
     private WebClient.Builder webClientBuilder;
 
+    @Mock
+    private WebClient webClient;
+
+    @Mock
+    private WebClient.RequestBodyUriSpec requestBodyUriSpec;
+
+    @Mock
+    private WebClient.RequestHeadersSpec<?> requestHeadersSpec;
+
+    @Mock
+    private WebClient.ResponseSpec responseSpec;
+
+    private SpotifyAuthService spotifyAuthService;
+
+    private final String TEST_CLIENT_ID = "test-client-id";
+    private final String TEST_CLIENT_SECRET = "test-client-secret";
+    private final String TEST_TOKEN_URL = "/api/token";
+    private final String TEST_ACCESS_TOKEN = "test-access-token";
+
     @BeforeEach
-    public void setUp() {
-        // Create mocks for WebClient and its nested types
-        WebClient webClientMock = mock(WebClient.class);
-        WebClient.RequestBodyUriSpec uriSpecMock = mock(WebClient.RequestBodyUriSpec.class);
-        WebClient.RequestBodySpec bodySpecMock = mock(WebClient.RequestBodySpec.class);
-        WebClient.RequestHeadersSpec<?> headersSpecMock = mock(WebClient.RequestHeadersSpec.class);
-        WebClient.ResponseSpec responseSpecMock = mock(WebClient.ResponseSpec.class);
+    void setUp() {
+        logger.info("Setting up SpotifyAuthServiceTest...");
 
-        // Set up method call chain with doReturn to avoid issues with generics
-        doReturn(uriSpecMock).when(webClientMock).post();
-        doReturn(bodySpecMock).when(uriSpecMock).uri(anyString());
-        doReturn(bodySpecMock).when(bodySpecMock).header(anyString(), anyString());
-        doReturn(headersSpecMock).when(bodySpecMock).bodyValue(any());
-        doReturn(responseSpecMock).when(headersSpecMock).retrieve();
-
-        // Mock the response to return a TokenResponse object with a mocked access token
-        TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setAccessToken("mock-access-token");
-        tokenResponse.setTokenType("Bearer");
-        tokenResponse.setExpiresIn(3600);
-        doReturn(Mono.just(tokenResponse)).when(responseSpecMock).bodyToMono(TokenResponse.class);
-
-        // Mock WebClient.Builder and provide the mock WebClient
-        webClientBuilder = mock(WebClient.Builder.class);
+        // Set up mock chain
         doReturn(webClientBuilder).when(webClientBuilder).baseUrl(anyString());
-        doReturn(webClientMock).when(webClientBuilder).build();
+        doReturn(webClient).when(webClientBuilder).build();
+        doReturn(requestBodyUriSpec).when(webClient).post();
+        doReturn(requestBodyUriSpec).when(requestBodyUriSpec).uri(anyString());
+        doReturn(requestBodyUriSpec).when(requestBodyUriSpec).header(anyString(), anyString());
+        doReturn(requestHeadersSpec).when(requestBodyUriSpec).bodyValue(anyString());
+        doReturn(responseSpec).when(requestHeadersSpec).retrieve();
 
-        // Initialize SpotifyAuthService with the mocked WebClient builder
+        // Manually create the service with the mocked builder
         spotifyAuthService = new SpotifyAuthService(webClientBuilder);
 
-        // Log each step of the setup
-        logger.info("WebClient and nested mocks set up successfully.");
+        // Set required properties
+        ReflectionTestUtils.setField(spotifyAuthService, "clientId", TEST_CLIENT_ID);
+        ReflectionTestUtils.setField(spotifyAuthService, "clientSecret", TEST_CLIENT_SECRET);
+        ReflectionTestUtils.setField(spotifyAuthService, "tokenUrl", TEST_TOKEN_URL);
+
+        logger.info("Initialized SpotifyAuthService with Client ID: {}", TEST_CLIENT_ID);
     }
 
     @Test
-    void testGetAccessToken() {
-        logger.info("Testing getAccessToken method.");
-        String accessToken = spotifyAuthService.getAccessToken().block();  // Blocking to get the result for testing
-        assertEquals("mock-access-token", accessToken);  // Verify that the access token matches expected value
-        logger.info("Access token retrieved: {}", accessToken);
+    void testGetAccessToken_Success() {
+        logger.info("Executing testGetAccessToken_Success...");
+
+        // Prepare test data
+        TokenResponse tokenResponse = new TokenResponse();
+        tokenResponse.setAccessToken(TEST_ACCESS_TOKEN);
+
+        // Mock the response
+        doReturn(Mono.just(tokenResponse)).when(responseSpec).bodyToMono(TokenResponse.class);
+
+        // Execute and verify
+        StepVerifier.create(spotifyAuthService.getAccessToken())
+                .expectNext(TEST_ACCESS_TOKEN)
+                .verifyComplete();
+
+        // Verify the WebClient calls
+        verify(webClient).post();
+        verify(requestBodyUriSpec).uri(TEST_TOKEN_URL);
+        verify(requestBodyUriSpec).header("Content-Type", "application/x-www-form-urlencoded");
+        verify(requestBodyUriSpec).bodyValue(
+                "grant_type=client_credentials&client_id=" + TEST_CLIENT_ID + "&client_secret=" + TEST_CLIENT_SECRET);
+
+        logger.info("Successfully retrieved access token: {}", TEST_ACCESS_TOKEN);
+    }
+
+    @Test
+    void testGetAccessToken_Error() {
+        logger.info("Executing testGetAccessToken_Error...");
+
+        // Mock error response
+        RuntimeException testException = new RuntimeException("Test error");
+        doReturn(Mono.error(testException)).when(responseSpec).bodyToMono(TokenResponse.class);
+
+        // Execute and verify
+        StepVerifier.create(spotifyAuthService.getAccessToken())
+                .expectError(RuntimeException.class)
+                .verify();
+
+        logger.error("Expected error occurred while retrieving access token: {}", testException.getMessage());
     }
 }
