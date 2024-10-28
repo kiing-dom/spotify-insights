@@ -58,4 +58,14 @@ public class SpotifyAuthService {
                 .map(TokenResponse::getAccessToken)
                 .doOnError(e -> logger.error("Error retrieving access token: {}", e.getMessage()));
     }
+
+    public String getAuthorizationUrl() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAuthorizationUrl'");
+    }
+
+    public void exchangeCodeForAccessToken(String code) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'exchangeCodeForAccessToken'");
+    }
 }
