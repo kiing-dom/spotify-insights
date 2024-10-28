@@ -1,9 +1,13 @@
 package com.kiing.spotsight.service.auth;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -69,7 +73,27 @@ public class SpotifyAuthService {
     }
 
     public void exchangeCodeForAccessToken(String code) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'exchangeCodeForAccessToken'");
+        String encodedCredentials = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes(StandardCharsets.UTF_8));
+
+        try {
+            TokenResponse tokenResponse = webClient.post()
+                .uri("/api/token")
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + encodedCredentials)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData("grant_type", "authorization_code")
+                                            .with("code", code)
+                                            .with("redirect_uri", redirectUri))
+                .retrieve()
+                .bodyToMono(TokenResponse.class)
+                .block();
+            
+            String accessToken = tokenResponse.getAccessToken();
+            logger.info("Access token retrieved successfully: {}", accessToken);
+                // maybe use reactive streams later
+        } catch (WebClientResponseException e) {
+            logger.error("Error exchanging code for access token: Status - {}, Message - {}", e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unexpected error: {}", e.getMessage());
+        }
     }
 }
