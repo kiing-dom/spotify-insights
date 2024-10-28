@@ -68,7 +68,7 @@ public class SpotifyAuthService {
 
     public String getAuthorizationUrl() {
         String scope = "user-read private user-read-email user-top-read";
-        return String.format("%s?clienit_id=%s&response_type=code&redirect_uri=%s&scope=%s",
+        return String.format("%s?client_id=%s&response_type=code&redirect_uri=%s&scope=%s",
                                 "https://accounts.spotify.com/authorize", clientId, redirectUri, scope);
     }
 
