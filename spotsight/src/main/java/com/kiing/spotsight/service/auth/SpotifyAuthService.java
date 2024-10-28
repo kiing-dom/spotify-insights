@@ -30,6 +30,9 @@ public class SpotifyAuthService {
     @Value("${spotify.auth-url}")
     private String tokenUrl;
 
+    @Value("${spotify.redirect-uri}")
+    private String redirectUri;
+
     public SpotifyAuthService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("https://accounts.spotify.com").build();
     }
@@ -60,8 +63,9 @@ public class SpotifyAuthService {
     }
 
     public String getAuthorizationUrl() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAuthorizationUrl'");
+        String scope = "user-read private user-read-email user-top-read";
+        return String.format("%s?clienit_id=%s&response_type=code&redirect_uri=%s&scope=%s",
+                                "https://accounts.spotify.com/authorize", clientId, redirectUri, scope);
     }
 
     public void exchangeCodeForAccessToken(String code) {
