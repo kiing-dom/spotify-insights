@@ -24,7 +24,12 @@ public class SpotifyInsightsCLI {
         int choice = Integer.parseInt(reader.readLine());
 
         switch (choice) {
-            
+            case 1 -> getUserProfile();
+            default -> System.out.println("Invalid choice, bozo!");
         }
+    }
+
+    private void getUserProfile() {
+        
     }
 }
