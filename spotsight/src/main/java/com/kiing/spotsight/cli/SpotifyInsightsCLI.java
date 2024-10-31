@@ -1,6 +1,7 @@
 package com.kiing.spotsight.cli;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -14,7 +15,7 @@ public class SpotifyInsightsCLI {
         cli.run();
     }
 
-    public void run() throws Exception {
+    public void run() throws IOException {
         System.out.println("Spotify Insights CLI");
         System.out.println("1. Get User Profile");
         System.out.println("2. Get Top Tracks");
@@ -30,6 +31,12 @@ public class SpotifyInsightsCLI {
     }
 
     private void getUserProfile() {
+        String userProfileEndpoint = BASE_URL + "/user-profile";
+        String response = makeGetRequest(userProfileEndpoint);
+        System.out.println("User Profile Data: " + response);
+    }
+
+    private String makeGetRequest(String endpoint) {
         
     }
 }
