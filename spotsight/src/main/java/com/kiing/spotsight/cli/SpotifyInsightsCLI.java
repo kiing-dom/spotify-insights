@@ -30,13 +30,30 @@ public class SpotifyInsightsCLI {
         }
     }
 
-    private void getUserProfile() {
+    private void getUserProfile() throws IOException {
         String userProfileEndpoint = BASE_URL + "/user-profile";
         String response = makeGetRequest(userProfileEndpoint);
         System.out.println("User Profile Data: " + response);
     }
 
-    private String makeGetRequest(String endpoint) {
-        
+    private String makeGetRequest(String endpoint) throws IOException {
+        URL url = new URL(endpoint);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+
+        int responseCode = conn.getResponseCode();
+        if(responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
+            StringBuilder content = new StringBuilder();
+            while((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+
+            in.close();
+            return content.toString();
+        } else {
+            throw new IOException("Failed to fetch data: HTTP error code " + responseCode);
+        }
     }
 }
