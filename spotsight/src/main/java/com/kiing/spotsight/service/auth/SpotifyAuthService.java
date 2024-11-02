@@ -88,6 +88,7 @@ public class SpotifyAuthService {
                 .block();
             
             String accessToken = tokenResponse.getAccessToken();
+            logger.info("Authorization Code is: {}", code);
             logger.info("Access token retrieved successfully: {}", accessToken);
                 // maybe use reactive streams later
         } catch (WebClientResponseException e) {
