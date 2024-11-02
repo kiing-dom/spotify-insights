@@ -18,7 +18,6 @@ public class SpotifyInsightsCLI {
     public void run() throws IOException {
         System.out.println("Spotify Insights CLI");
         System.out.println("1. Get User Profile");
-        System.out.println("2. Get Top Tracks");
         System.out.println("Choose an Option: ");
 
         BufferedReader reader =  new BufferedReader(new InputStreamReader(System.in));
