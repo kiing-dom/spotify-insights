@@ -46,7 +46,24 @@ public class SpotifyInsightsCLI {
     }
 
     private void authenticateUser() throws IOException {
-        
+        System.out.println("Please go to the following URL to authorize: ");
+        System.out.println(spotifyAuthService.getAuthorizationUrl());
+        System.out.println("Paste the authorization code here: ");
+
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            String code = reader.readLine();
+            
+            this.accessToken = spotifyAuthService.getAccessToken().block();
+            spotifyAuthService.exchangeCodeForAccessToken(code);
+            
+            System.out.println("Authentication successful. Access token obtained.");
+        } catch (IOException e) {
+            System.err.println("An error occurred while reading input. Please Try again");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Authentication failed. Please check your input or try again later");
+            e.printStackTrace();
+        }
     }
 
     private void getUserProfile() throws IOException {
