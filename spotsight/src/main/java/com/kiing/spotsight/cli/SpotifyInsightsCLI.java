@@ -6,21 +6,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.kiing.spotsight.service.auth.SpotifyAuthService;
 
+@Component
 public class SpotifyInsightsCLI {
     
     private static final String BASE_URL = "http://localhost:8080/api/";
     private final SpotifyAuthService spotifyAuthService;
     private String accessToken;
 
+    @Autowired
     public SpotifyInsightsCLI(SpotifyAuthService spotifyAuthService) {
         this.spotifyAuthService = spotifyAuthService;
-    }
-
-    public static void main(String[] args) throws Exception {
-        SpotifyInsightsCLI cli = new SpotifyInsightsCLI();
-        cli.run();
     }
 
     public void run() throws IOException {
@@ -33,9 +33,20 @@ public class SpotifyInsightsCLI {
         int choice = Integer.parseInt(reader.readLine());
 
         switch (choice) {
-            case 1 -> getUserProfile();
+            case 1 -> authenticateUser();
+            case 2 -> {
+                if(accessToken == null) {
+                    System.out.println("Please authenticate first!");
+                } else {
+                    getUserProfile();
+                }
+            }
             default -> System.out.println("Invalid choice, bozo!");
         }
+    }
+
+    private void authenticateUser() throws IOException {
+        
     }
 
     private void getUserProfile() throws IOException {
