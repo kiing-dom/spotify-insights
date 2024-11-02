@@ -6,9 +6,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.kiing.spotsight.service.auth.SpotifyAuthService;
+
 public class SpotifyInsightsCLI {
     
     private static final String BASE_URL = "http://localhost:8080/api/";
+    private final SpotifyAuthService spotifyAuthService;
+    private String accessToken;
+
+    public SpotifyInsightsCLI(SpotifyAuthService spotifyAuthService) {
+        this.spotifyAuthService = spotifyAuthService;
+    }
 
     public static void main(String[] args) throws Exception {
         SpotifyInsightsCLI cli = new SpotifyInsightsCLI();
@@ -17,7 +25,8 @@ public class SpotifyInsightsCLI {
 
     public void run() throws IOException {
         System.out.println("Spotify Insights CLI");
-        System.out.println("1. Get User Profile");
+        System.out.println("1. Authenticate");
+        System.out.println("2. Get User Profile");
         System.out.println("Choose an Option: ");
 
         BufferedReader reader =  new BufferedReader(new InputStreamReader(System.in));
