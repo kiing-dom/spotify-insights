@@ -7,11 +7,9 @@ public class UserProfile {
     @JsonProperty("display_name")
     private String displayName;
     
-    private String email;
 
     private String country;
 
-    private String id;
 
     public String getDisplayName() {
         return displayName;
@@ -21,28 +19,12 @@ public class UserProfile {
         this.displayName = displayName;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getCountry() {
         return country;
     }
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     @JsonProperty("images")

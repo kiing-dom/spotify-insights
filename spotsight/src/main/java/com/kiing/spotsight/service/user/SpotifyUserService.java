@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.kiing.spotsight.model.user.UserProfile;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -29,5 +30,9 @@ public class SpotifyUserService {
             .bodyToMono(UserProfile.class)
             .doOnSuccess(profile -> logger.info("Successfully retrieved user profile for: {}", profile.getDisplayName()))
             .doOnError(e -> logger.error("Error retrieving user profile: {}", e.getMessage()));
+    }
+
+    public Flux<TopArtists> getTopArtists(String accessToken) {
+        
     }
 }
