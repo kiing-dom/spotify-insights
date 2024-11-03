@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.kiing.spotsight.model.user.UserProfile;
+import com.kiing.spotsight.model.user.top.TopArtists;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -33,6 +34,6 @@ public class SpotifyUserService {
     }
 
     public Flux<TopArtists> getTopArtists(String accessToken) {
-        
+
     }
 }
