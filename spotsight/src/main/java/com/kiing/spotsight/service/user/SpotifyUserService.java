@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.kiing.spotsight.model.user.UserProfile;
 import com.kiing.spotsight.model.user.top.TopArtists;
@@ -33,7 +34,19 @@ public class SpotifyUserService {
             .doOnError(e -> logger.error("Error retrieving user profile: {}", e.getMessage()));
     }
 
-    public Flux<TopArtists> getTopArtists(String accessToken) {
+    public Flux<TopArtists> getTopArtists(String accessToken, String timeRange, int limit, int offset) {
+        
+        String uri = UriComponentsBuilder.fromUriString("me/top/artists")
+            .queryParam("time_range", timeRange)
+            .queryParam("limit", limit)
+            .queryParam("offset", offset)
+            .toUriString();
 
+        return webClient.get()
+            .uri(uri)
+            .header("Authorization", "Bearer " + accessToken)
+            .retrieve()
+            .bodyToFlux(TopArtists.class)
+            .doOnError(e -> logger.error("Error retrieving top artists: {}", e.getMessage()));
     }
 }
