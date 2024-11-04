@@ -1,31 +1,116 @@
 package com.kiing.spotsight.model.user.top;
 
+import java.util.*;
+
 public class TopArtists {
-    private String name;
-    private String genre;
-    private String followers;
+    private List<Item> items;
+    private int total;
+    private int limit;
+    private int offset;
 
-    public String getName() {
-        return name;
+    public static class Item {
+        private String name;
+        private List<String> genres;
+        private Followers followers;
+        private ExternalUrls external_urls;
+        private long popularity;
+
+        // Getters and setters
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public List<String> getGenres() {
+            return genres;
+        }
+
+        public void setGenres(List<String> genres) {
+            this.genres = genres;
+        }
+
+        public Followers getFollowers() {
+            return followers;
+        }
+
+        public void setFollowers(Followers followers) {
+            this.followers = followers;
+        }
+
+        public ExternalUrls getExternal_urls() {
+            return external_urls;
+        }
+
+        public void setExternal_urls(ExternalUrls external_urls) {
+            this.external_urls = external_urls;
+        }
+
+        public long getPopularity() {
+            return popularity;
+        }
+
+        public void setPopularity(long popularity) {
+            this.popularity = popularity;
+        }
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public static class Followers {
+        private int total;
+
+        public int getTotal() {
+            return total;
+        }
+
+        public void setTotal(int total) {
+            this.total = total;
+        }
     }
 
-    public String getGenre() {
-        return genre;
+    public static class ExternalUrls {
+        private String spotify;
+
+        public String getSpotify() {
+            return spotify;
+        }
+
+        public void setSpotify(String spotify) {
+            this.spotify = spotify;
+        }
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    // Getters and setters for the main class
+    public List<Item> getItems() {
+        return items;
     }
 
-    public String getFollowers() {
-        return followers;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 
-    public void setFollowers(String followers) {
-        this.followers = followers;
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 }
