@@ -69,7 +69,6 @@ public class SpotifyInsightsCLI {
         System.out.print("Please enter your Spotify access token: ");
         String accessToken = scanner.nextLine();
         
-        String userProfileEndpoint = BASE_URL + "user-profile";
     
         // Check if the access token is provided
         if (accessToken == null || accessToken.isEmpty()) {
