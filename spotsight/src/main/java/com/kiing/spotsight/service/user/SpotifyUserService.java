@@ -34,9 +34,9 @@ public class SpotifyUserService {
             .doOnError(e -> logger.error("Error retrieving user profile: {}", e.getMessage()));
     }
 
-    public Flux<TopArtists> getTopArtists(String accessToken, String timeRange, int limit, int offset) {
+    public Flux<TopArtists.Item> getTopArtists(String accessToken, String timeRange, int limit, int offset) {
         
-        String uri = UriComponentsBuilder.fromUriString("me/top/artists")
+        String uri = UriComponentsBuilder.fromUriString("/me/top/artists")
             .queryParam("time_range", timeRange)
             .queryParam("limit", limit)
             .queryParam("offset", offset)
@@ -46,7 +46,8 @@ public class SpotifyUserService {
             .uri(uri)
             .header("Authorization", "Bearer " + accessToken)
             .retrieve()
-            .bodyToFlux(TopArtists.class)
+            .bodyToMono(TopArtists.class)
+            .flatMapMany(response -> Flux.fromIterable(response.getItems()))
             .doOnError(e -> logger.error("Error retrieving top artists: {}", e.getMessage()));
     }
 }
