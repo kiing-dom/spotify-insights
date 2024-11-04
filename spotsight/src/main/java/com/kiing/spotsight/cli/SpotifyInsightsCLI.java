@@ -3,9 +3,6 @@ package com.kiing.spotsight.cli;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
 
 import org.springframework.stereotype.Component;
 
@@ -14,7 +11,7 @@ import com.kiing.spotsight.service.user.SpotifyUserService;
 
 @Component
 public class SpotifyInsightsCLI {
-    
+
     private static final String BASE_URL = "http://localhost:8080/api/";
     private final SpotifyAuthService spotifyAuthService;
     private final SpotifyUserService spotifyUserService;
@@ -52,58 +49,46 @@ public class SpotifyInsightsCLI {
         }
 
         // Close the BufferedReader when done
-        // reader.close();
+        reader.close();
     }
 
     private void authenticateUser() {
         System.out.println("Please go to the following URL to authorize: ");
         System.out.println(spotifyAuthService.getAuthorizationUrl());
-        // Additional logic to store access token if necessary
     }
 
-    private void getUserProfile() {
-        // Create a Scanner object for user input
-        Scanner scanner = new Scanner(System.in);
-        
-        // Prompt the user for the access token
+    private void getUserProfile() throws IOException {
+        // Prompt the user for the access token using BufferedReader
         System.out.print("Please enter your Spotify access token: ");
-        String accessToken = scanner.nextLine();
-        
-    
-        // Check if the access token is provided
+        String accessToken = reader.readLine();
+
         if (accessToken == null || accessToken.isEmpty()) {
             System.out.println("Access token is required. Please provide a valid token.");
-            // scanner.close();
-            return; // Exit the method if no token is provided
+            return;
         }
-    
+
         spotifyUserService.getUserProfile(accessToken)
             .doOnNext(user -> System.out.println("Got the user profile for " + user.getDisplayName()))
             .doOnNext(user -> System.out.println("From Country: " + user.getCountry()))
             .doOnError(e -> System.out.println("Error" + e.getMessage()))
             .subscribe();
-        // Check if the access token is valid
-        
-        
-        // scanner.close();
     }
 
-    private void getTopArtists()  {
-        Scanner scanner = new Scanner(System.in);
+    private void getTopArtists() throws IOException {
+        System.out.print("Please enter the access token: ");
+        String accessToken = reader.readLine();
 
-        System.out.println("Please enter the access token: ");
-        String accessToken = scanner.nextLine();
+        System.out.print("Enter time range (short_term, medium_term, long_term): ");
+        String timeRange = reader.readLine();
 
-        System.out.println("Enter time range (short_term, medium_term, long_term): ");
-        String timeRange = scanner.nextLine();
+        System.out.print("Enter Artist Limit (e.g. 10): ");
+        int limit = Integer.parseInt(reader.readLine());
 
-        System.out.println("Enter Artist Limit (e.g. 10): ");
-        int limit = Integer.parseInt(scanner.nextLine());
-        System.out.println("Enter offset (e.g. 0): ");
-        int offset = Integer.parseInt(scanner.nextLine());
+        System.out.print("Enter offset (e.g. 0): ");
+        int offset = Integer.parseInt(reader.readLine());
 
-        if(accessToken.isEmpty()) {
-            System.out.println("An access token is required. Please provide one");
+        if (accessToken.isEmpty()) {
+            System.out.println("An access token is required. Please provide one.");
             return;
         }
 
