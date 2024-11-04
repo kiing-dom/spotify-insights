@@ -61,7 +61,7 @@ public class SpotifyInsightsCLI {
         // Additional logic to store access token if necessary
     }
 
-    private void getUserProfile() throws IOException {
+    private void getUserProfile() {
         // Create a Scanner object for user input
         Scanner scanner = new Scanner(System.in);
         
