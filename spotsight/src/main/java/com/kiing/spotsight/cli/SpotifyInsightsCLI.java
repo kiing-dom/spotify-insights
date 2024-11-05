@@ -12,7 +12,6 @@ import com.kiing.spotsight.service.user.SpotifyUserService;
 @Component
 public class SpotifyInsightsCLI {
 
-    private static final String BASE_URL = "http://localhost:8080/api/";
     private final SpotifyAuthService spotifyAuthService;
     private final SpotifyUserService spotifyUserService;
     private final BufferedReader reader;
