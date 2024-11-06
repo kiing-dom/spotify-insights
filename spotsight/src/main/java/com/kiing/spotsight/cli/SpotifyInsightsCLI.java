@@ -30,7 +30,8 @@ public class SpotifyInsightsCLI {
             System.out.println("1. Authenticate");
             System.out.println("2. Get User Profile");
             System.out.println("3. Get Top Artists");
-            System.out.println("4. Exit");
+            System.out.println("4. Get Top Tracks");
+            System.out.println("5. Exit");
             System.out.print("Choose an Option: ");
 
             int choice = Integer.parseInt(reader.readLine());
@@ -39,7 +40,8 @@ public class SpotifyInsightsCLI {
                 case 1 -> authenticateUser();
                 case 2 -> getUserProfile();
                 case 3 -> getTopArtists();
-                case 4 -> {
+                case 4 -> getTopTracks();
+                case 5 -> {
                     System.out.println("Exiting...");
                     running = false;
                 }
@@ -95,5 +97,9 @@ public class SpotifyInsightsCLI {
             .doOnNext(artist -> System.out.println("Artists: " + artist.getName()))
             .doOnError(e -> System.out.println("Error: " + e.getMessage()))
             .subscribe();
+    }
+
+    private void getTopTracks() {
+        
     }
 }
