@@ -52,7 +52,7 @@ public class SpotifyUserService {
             .doOnError(e -> logger.error("Error retrieving top artists: {}", e.getMessage()));
     }
 
-    public Flux<TopTracks.Item> getTopTracks(String accessToken, String timeRange, String limit, String offset) {
+    public Flux<TopTracks.Item> getTopTracks(String accessToken, String timeRange, int limit, int offset) {
         String uri = UriComponentsBuilder.fromUriString("/me/top/tracks")
             .queryParam("time_range", timeRange)
             .queryParam("limit", limit)
