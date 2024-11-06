@@ -20,7 +20,7 @@ public class TopTracks {
 
     public static class Artists {
         private String name;
-        
+        private String type;
     }
 
 
