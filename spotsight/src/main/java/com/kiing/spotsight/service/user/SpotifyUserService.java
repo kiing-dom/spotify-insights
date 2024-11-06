@@ -9,6 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.kiing.spotsight.model.user.UserProfile;
 import com.kiing.spotsight.model.user.top.TopArtists;
+import com.kiing.spotsight.model.user.top.TopTracks;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -49,5 +50,21 @@ public class SpotifyUserService {
             .bodyToMono(TopArtists.class)
             .flatMapMany(response -> Flux.fromIterable(response.getItems()))
             .doOnError(e -> logger.error("Error retrieving top artists: {}", e.getMessage()));
+    }
+
+    public Flux<TopTracks.Item> getTopTracks(String accessToken, String timeRange, String limit, String offset) {
+        String uri = UriComponentsBuilder.fromUriString("/me/top/tracks")
+            .queryParam("time_range", timeRange)
+            .queryParam("limit", limit)
+            .queryParam("offset", offset)
+            .toUriString();
+
+        return webClient.get()
+            .uri(uri)
+            .header("Authorization", "Bearer " + accessToken)
+            .retrieve()
+            .bodyToMono(TopTracks.class)
+            .flatMapMany(response -> Flux.fromIterable(response.getItems()))
+            .doOnError(e -> logger.error("Error retrieving top tracks: {}", e.getMessage()));
     }
 }
