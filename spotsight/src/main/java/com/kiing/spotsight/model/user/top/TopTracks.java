@@ -10,7 +10,6 @@ public class TopTracks {
         private String name;
         private int popularity;
         private Album album;
-        private Artists artists;
 
         public String getName() {
             return name;
@@ -23,9 +22,7 @@ public class TopTracks {
             return album;
         }
 
-        public Artists getArtists() {
-            return artists;
-        }
+
 
     }
 
@@ -49,19 +46,6 @@ public class TopTracks {
 
         public String getReleaseDate() {
             return releaseDate;
-        }
-    }
-
-    public static class Artists {
-        private String name;
-        private String type;
-
-        public String getName() {
-            return name;
-        }
-
-        public String getType() {
-            return type;
         }
     }
 
