@@ -7,4 +7,14 @@ public class TopTracks {
     public static class Item {
         
     }
+
+    public static class Album {
+
+    }
+
+    public static class Artists {
+
+    }
+
+    
 }
