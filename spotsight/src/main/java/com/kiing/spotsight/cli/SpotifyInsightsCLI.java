@@ -103,7 +103,7 @@ public class SpotifyInsightsCLI {
         System.out.println("Please enter the access token: ");
         String accessToken = reader.readLine();
 
-        System.out.println("Enter time range (short_term, medium_term, long_term");
+        System.out.println("Enter time range (short_term, medium_term, long_term)");
         String timeRange = reader.readLine();
 
         System.out.println("Enter Track Limit: ");
