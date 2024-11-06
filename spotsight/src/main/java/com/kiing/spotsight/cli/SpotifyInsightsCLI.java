@@ -118,7 +118,7 @@ public class SpotifyInsightsCLI {
         }
 
         spotifyUserService.getTopTracks(accessToken, timeRange, limit, offset)
-            .doOnNext(track -> System.out.println("Track: " + track.getName() + "On Album: " + track.getAlbum()))
+            .doOnNext(track -> System.out.println("Track: " + track.getName() + "On Album: " + track.getAlbum().getName()))
             .doOnNext(track -> System.out.println("Popularity: " + track.getPopularity()))
             .doOnError(e -> System.out.println("Error" + e.getMessage()))
             .subscribe();
