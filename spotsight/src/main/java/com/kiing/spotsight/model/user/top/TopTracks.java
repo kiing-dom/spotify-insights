@@ -1,6 +1,11 @@
 package com.kiing.spotsight.model.user.top;
+
+import java.util.List;
 public class TopTracks {
-    
+    private List<Item> items;
+    private int total;
+    private int limit;
+    private int offset;
     public static class Item {
         private String name;
         private int popularity;
@@ -58,5 +63,21 @@ public class TopTracks {
         public String getType() {
             return type;
         }
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public int getOffset() {
+        return offset;
     }
 }
