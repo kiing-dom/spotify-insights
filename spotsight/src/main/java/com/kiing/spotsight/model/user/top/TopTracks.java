@@ -1,7 +1,4 @@
 package com.kiing.spotsight.model.user.top;
-
-import java.util.*;
-
 public class TopTracks {
     
     public static class Item {
@@ -21,7 +18,7 @@ public class TopTracks {
             return album;
         }
 
-        private Artists getArtists() {
+        public Artists getArtists() {
             return artists;
         }
 
