@@ -12,7 +12,7 @@ public class TopArtists {
         private String name;
         private List<String> genres;
         private Followers followers;
-        private ExternalUrls external_urls;
+        private ExternalUrls externalUrls;
         private long popularity;
 
         // Getters and setters
@@ -40,12 +40,12 @@ public class TopArtists {
             this.followers = followers;
         }
 
-        public ExternalUrls getExternal_urls() {
-            return external_urls;
+        public ExternalUrls getExternalUrls() {
+            return externalUrls;
         }
 
-        public void setExternal_urls(ExternalUrls external_urls) {
-            this.external_urls = external_urls;
+        public void setExternalUrls(ExternalUrls externalUrls) {
+            this.externalUrls = externalUrls;
         }
 
         public long getPopularity() {
