@@ -99,7 +99,28 @@ public class SpotifyInsightsCLI {
             .subscribe();
     }
 
-    private void getTopTracks() {
+    private void getTopTracks() throws IOException {
+        System.out.println("Please enter the access token: ");
+        String accessToken = reader.readLine();
+
+        System.out.println("Enter time range (short_term, medium_term, long_term");
+        String timeRange = reader.readLine();
+
+        System.out.println("Enter Track Limit: ");
+        int limit = Integer.parseInt(reader.readLine());
         
+        System.out.println("Enter offset: ");
+        int offset = Integer.parseInt(reader.readLine());
+
+        if(accessToken.isEmpty()) {
+            System.out.println("An access token is required. Please provide one");
+            return;
+        }
+
+        spotifyUserService.getTopTracks(accessToken, timeRange, limit, offset)
+            .doOnNext(track -> System.out.println("Track: " + track.getName() + "On Album: " + track.getAlbum()))
+            .doOnNext(track -> System.out.println("Popularity: " + track.getPopularity()))
+            .doOnError(e -> System.out.println("Error" + e.getMessage()))
+            .subscribe();
     }
 }
