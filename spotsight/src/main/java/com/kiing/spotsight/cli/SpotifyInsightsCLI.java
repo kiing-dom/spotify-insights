@@ -65,19 +65,19 @@ public class SpotifyInsightsCLI {
     private void getUserProfile() throws IOException {
         try {
             // Prompt the user for the access token using BufferedReader
-        System.out.print("Please enter your Spotify access token: ");
-        String accessToken = reader.readLine();
+            System.out.print("Please enter your Spotify access token: ");
+            String accessToken = reader.readLine();
 
-        if (accessToken == null || accessToken.isEmpty()) {
-            System.out.println("Access token is required. Please provide a valid token.");
-            return;
-        }
+            if (accessToken == null || accessToken.isEmpty()) {
+                System.out.println("Access token is required. Please provide a valid token.");
+                return;
+            }
 
-        spotifyUserService.getUserProfile(accessToken)
-                .doOnNext(user -> System.out.println("Got the user profile for " + user.getDisplayName()))
-                .doOnNext(user -> System.out.println("From Country: " + user.getCountry()))
-                .doOnError(e -> System.out.println("Error" + e.getMessage()))
-                .subscribe();
+            spotifyUserService.getUserProfile(accessToken)
+                    .doOnNext(user -> System.out.println("Got the user profile for " + user.getDisplayName()))
+                    .doOnNext(user -> System.out.println("From Country: " + user.getCountry()))
+                    .doOnError(e -> System.out.println("Error" + e.getMessage()))
+                    .subscribe();
         } catch (IOException e) {
             System.out.println("An error occurred while reading input: " + e.getMessage());
         }
@@ -86,33 +86,34 @@ public class SpotifyInsightsCLI {
     private void getTopArtists() throws IOException {
         try {
             System.out.print("Please enter the access token: ");
-        String accessToken = reader.readLine();
+            String accessToken = reader.readLine();
 
-        System.out.print("Enter time range (short_term, medium_term, long_term): ");
-        String timeRange = reader.readLine();
+            System.out.print("Enter time range (short_term, medium_term, long_term): ");
+            String timeRange = reader.readLine();
 
-        System.out.print("Enter Artist Limit (e.g. 10): ");
-        int limit = Integer.parseInt(reader.readLine());
+            System.out.print("Enter Artist Limit (e.g. 10): ");
+            int limit = Integer.parseInt(reader.readLine());
 
-        System.out.print("Enter offset (e.g. 0): ");
-        int offset = Integer.parseInt(reader.readLine());
+            System.out.print("Enter offset (e.g. 0): ");
+            int offset = Integer.parseInt(reader.readLine());
 
-        if (accessToken.isEmpty()) {
-            System.out.println("An access token is required. Please provide one.");
-            return;
-        }
+            if (accessToken.isEmpty()) {
+                System.out.println("An access token is required. Please provide one.");
+                return;
+            }
 
-        spotifyUserService.getTopArtists(accessToken, timeRange, limit, offset)
-                .doOnNext(artist -> System.out.println("Artists: " + artist.getName()))
-                .doOnError(e -> System.out.println("Error: " + e.getMessage()))
-                .subscribe();
+            spotifyUserService.getTopArtists(accessToken, timeRange, limit, offset)
+                    .doOnNext(artist -> System.out.println("Artists: " + artist.getName()))
+                    .doOnError(e -> System.out.println("Error: " + e.getMessage()))
+                    .subscribe();
         } catch (IOException e) {
             System.out.println("An error occurred while reading input: " + e.getMessage());
         }
     }
 
     private void getTopTracks() throws IOException {
-        System.out.println("Please enter the access token: ");
+        try {
+            System.out.println("Please enter the access token: ");
         String accessToken = reader.readLine();
 
         System.out.println("Enter time range (short_term, medium_term, long_term)");
@@ -135,5 +136,8 @@ public class SpotifyInsightsCLI {
                 .doOnNext(track -> System.out.println("Popularity: " + track.getPopularity()))
                 .doOnError(e -> System.out.println("Error" + e.getMessage()))
                 .subscribe();
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading input: " + e.getMessage());
+        }
     }
 }
