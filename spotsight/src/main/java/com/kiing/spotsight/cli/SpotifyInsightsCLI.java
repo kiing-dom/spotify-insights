@@ -58,7 +58,7 @@ public class SpotifyInsightsCLI {
             System.out.println("Please go to the following URL to authorize: ");
             System.out.println(spotifyAuthService.getAuthorizationUrl());
         } catch (Exception e) {
-            System.out.println("Error closing readerL " + e.getMessage());
+            System.out.println("Error closing reader: " + e.getMessage());
         }
     }
 
