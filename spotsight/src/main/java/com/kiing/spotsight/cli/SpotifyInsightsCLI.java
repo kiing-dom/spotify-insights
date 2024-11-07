@@ -114,28 +114,28 @@ public class SpotifyInsightsCLI {
     private void getTopTracks() throws IOException {
         try {
             System.out.println("Please enter the access token: ");
-        String accessToken = reader.readLine();
+            String accessToken = reader.readLine();
 
-        System.out.println("Enter time range (short_term, medium_term, long_term)");
-        String timeRange = reader.readLine();
+            System.out.println("Enter time range (short_term, medium_term, long_term)");
+            String timeRange = reader.readLine();
 
-        System.out.println("Enter Track Limit: ");
-        int limit = Integer.parseInt(reader.readLine());
+            System.out.println("Enter Track Limit: ");
+            int limit = Integer.parseInt(reader.readLine());
 
-        System.out.println("Enter offset: ");
-        int offset = Integer.parseInt(reader.readLine());
+            System.out.println("Enter offset: ");
+            int offset = Integer.parseInt(reader.readLine());
 
-        if (accessToken.isEmpty()) {
-            System.out.println("An access token is required. Please provide one");
-            return;
-        }
+            if (accessToken.isEmpty()) {
+                System.out.println("An access token is required. Please provide one");
+                return;
+            }
 
-        spotifyUserService.getTopTracks(accessToken, timeRange, limit, offset)
-                .doOnNext(track -> System.out
-                        .println("Track: " + track.getName() + " On Album: " + track.getAlbum().getName()))
-                .doOnNext(track -> System.out.println("Popularity: " + track.getPopularity()))
-                .doOnError(e -> System.out.println("Error" + e.getMessage()))
-                .subscribe();
+            spotifyUserService.getTopTracks(accessToken, timeRange, limit, offset)
+                    .doOnNext(track -> System.out
+                            .println("Track: " + track.getName() + " On Album: " + track.getAlbum().getName()))
+                    .doOnNext(track -> System.out.println("Popularity: " + track.getPopularity()))
+                    .doOnError(e -> System.out.println("Error" + e.getMessage()))
+                    .subscribe();
         } catch (IOException e) {
             System.out.println("An error occurred while trying to get top tracks: " + e.getMessage());
         }
