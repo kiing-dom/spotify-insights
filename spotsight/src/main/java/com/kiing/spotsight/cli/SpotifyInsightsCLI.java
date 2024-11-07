@@ -63,7 +63,8 @@ public class SpotifyInsightsCLI {
     }
 
     private void getUserProfile() throws IOException {
-        // Prompt the user for the access token using BufferedReader
+        try {
+            // Prompt the user for the access token using BufferedReader
         System.out.print("Please enter your Spotify access token: ");
         String accessToken = reader.readLine();
 
@@ -77,6 +78,9 @@ public class SpotifyInsightsCLI {
                 .doOnNext(user -> System.out.println("From Country: " + user.getCountry()))
                 .doOnError(e -> System.out.println("Error" + e.getMessage()))
                 .subscribe();
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading input: " + e.getMessage());
+        }
     }
 
     private void getTopArtists() throws IOException {
