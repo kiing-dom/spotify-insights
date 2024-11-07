@@ -54,8 +54,12 @@ public class SpotifyInsightsCLI {
     }
 
     private void authenticateUser() {
-        System.out.println("Please go to the following URL to authorize: ");
-        System.out.println(spotifyAuthService.getAuthorizationUrl());
+        try {
+            System.out.println("Please go to the following URL to authorize: ");
+            System.out.println(spotifyAuthService.getAuthorizationUrl());
+        } catch (Exception e) {
+            System.out.println("Error closing readerL " + e.getMessage());
+        }
     }
 
     private void getUserProfile() throws IOException {
@@ -69,10 +73,10 @@ public class SpotifyInsightsCLI {
         }
 
         spotifyUserService.getUserProfile(accessToken)
-            .doOnNext(user -> System.out.println("Got the user profile for " + user.getDisplayName()))
-            .doOnNext(user -> System.out.println("From Country: " + user.getCountry()))
-            .doOnError(e -> System.out.println("Error" + e.getMessage()))
-            .subscribe();
+                .doOnNext(user -> System.out.println("Got the user profile for " + user.getDisplayName()))
+                .doOnNext(user -> System.out.println("From Country: " + user.getCountry()))
+                .doOnError(e -> System.out.println("Error" + e.getMessage()))
+                .subscribe();
     }
 
     private void getTopArtists() throws IOException {
@@ -94,9 +98,9 @@ public class SpotifyInsightsCLI {
         }
 
         spotifyUserService.getTopArtists(accessToken, timeRange, limit, offset)
-            .doOnNext(artist -> System.out.println("Artists: " + artist.getName()))
-            .doOnError(e -> System.out.println("Error: " + e.getMessage()))
-            .subscribe();
+                .doOnNext(artist -> System.out.println("Artists: " + artist.getName()))
+                .doOnError(e -> System.out.println("Error: " + e.getMessage()))
+                .subscribe();
     }
 
     private void getTopTracks() throws IOException {
@@ -108,19 +112,20 @@ public class SpotifyInsightsCLI {
 
         System.out.println("Enter Track Limit: ");
         int limit = Integer.parseInt(reader.readLine());
-        
+
         System.out.println("Enter offset: ");
         int offset = Integer.parseInt(reader.readLine());
 
-        if(accessToken.isEmpty()) {
+        if (accessToken.isEmpty()) {
             System.out.println("An access token is required. Please provide one");
             return;
         }
 
         spotifyUserService.getTopTracks(accessToken, timeRange, limit, offset)
-            .doOnNext(track -> System.out.println("Track: " + track.getName() + " On Album: " + track.getAlbum().getName()))
-            .doOnNext(track -> System.out.println("Popularity: " + track.getPopularity()))
-            .doOnError(e -> System.out.println("Error" + e.getMessage()))
-            .subscribe();
+                .doOnNext(track -> System.out
+                        .println("Track: " + track.getName() + " On Album: " + track.getAlbum().getName()))
+                .doOnNext(track -> System.out.println("Popularity: " + track.getPopularity()))
+                .doOnError(e -> System.out.println("Error" + e.getMessage()))
+                .subscribe();
     }
 }
