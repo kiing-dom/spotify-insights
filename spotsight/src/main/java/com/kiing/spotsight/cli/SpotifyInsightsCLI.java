@@ -79,7 +79,7 @@ public class SpotifyInsightsCLI {
                     .doOnError(e -> System.out.println("Error" + e.getMessage()))
                     .subscribe();
         } catch (IOException e) {
-            System.out.println("An error occurred while reading input: " + e.getMessage());
+            System.out.println("An error occurred while trying to get user profile: " + e.getMessage());
         }
     }
 
@@ -107,7 +107,7 @@ public class SpotifyInsightsCLI {
                     .doOnError(e -> System.out.println("Error: " + e.getMessage()))
                     .subscribe();
         } catch (IOException e) {
-            System.out.println("An error occurred while reading input: " + e.getMessage());
+            System.out.println("An error occurred while trying to get top artists: " + e.getMessage());
         }
     }
 
@@ -137,7 +137,7 @@ public class SpotifyInsightsCLI {
                 .doOnError(e -> System.out.println("Error" + e.getMessage()))
                 .subscribe();
         } catch (IOException e) {
-            System.out.println("An error occurred while reading input: " + e.getMessage());
+            System.out.println("An error occurred while trying to get top tracks: " + e.getMessage());
         }
     }
 }
