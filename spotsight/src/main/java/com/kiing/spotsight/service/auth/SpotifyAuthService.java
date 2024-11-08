@@ -67,6 +67,10 @@ public class SpotifyAuthService {
                 .doOnError(e -> logger.error("Error retrieving access token: {}", e.getMessage()));
     }
 
+    public String getStoredAccessToken() {
+        return this.accessToken;
+    }
+
     public String getAuthorizationUrl() {
         String scope = "user-read-private user-read-email user-top-read";
         return String.format("%s?client_id=%s&response_type=code&redirect_uri=%s&scope=%s",
