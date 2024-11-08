@@ -24,6 +24,7 @@ public class SpotifyAuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(SpotifyAuthService.class);
     private final WebClient webClient;
+    private String accessToken;
 
     @Value("${spotify.client-id}")
     private String clientId;
@@ -87,7 +88,7 @@ public class SpotifyAuthService {
                 .bodyToMono(TokenResponse.class)
                 .block();
             
-            String accessToken = tokenResponse.getAccessToken();
+            this.accessToken = tokenResponse.getAccessToken();
             logger.info("Authorization Code is: {}", code);
             logger.info("Access token retrieved successfully: {}", accessToken);
                 // maybe use reactive streams later
