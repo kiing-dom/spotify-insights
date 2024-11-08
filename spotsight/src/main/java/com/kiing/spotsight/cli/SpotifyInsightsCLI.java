@@ -62,11 +62,11 @@ public class SpotifyInsightsCLI {
         }
     }
 
-    private void getUserProfile() throws IOException {
+    private void getUserProfile() {
         try {
             // Prompt the user for the access token using BufferedReader
             System.out.print("Please enter your Spotify access token: ");
-            String accessToken = reader.readLine();
+            String accessToken = spotifyAuthService.getStoredAccessToken();
 
             if (accessToken == null || accessToken.isEmpty()) {
                 System.out.println("Access token is required. Please provide a valid token.");
@@ -78,7 +78,7 @@ public class SpotifyInsightsCLI {
                     .doOnNext(user -> System.out.println("From Country: " + user.getCountry()))
                     .doOnError(e -> System.out.println("Error" + e.getMessage()))
                     .subscribe();
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("An error occurred while trying to get user profile: " + e.getMessage());
         }
     }
@@ -86,7 +86,7 @@ public class SpotifyInsightsCLI {
     private void getTopArtists() throws IOException {
         try {
             System.out.print("Please enter the access token: ");
-            String accessToken = reader.readLine();
+            String accessToken = spotifyAuthService.getStoredAccessToken();
 
             System.out.print("Enter time range (short_term, medium_term, long_term): ");
             String timeRange = reader.readLine();
@@ -114,7 +114,7 @@ public class SpotifyInsightsCLI {
     private void getTopTracks() throws IOException {
         try {
             System.out.println("Please enter the access token: ");
-            String accessToken = reader.readLine();
+            String accessToken = spotifyAuthService.getStoredAccessToken();
 
             System.out.println("Enter time range (short_term, medium_term, long_term)");
             String timeRange = reader.readLine();
