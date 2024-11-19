@@ -19,7 +19,7 @@
         <h2>Profile Information</h2>
         <p th:if="${user != null}">
             <strong>Name: </strong><span th:text="${user.displayName}"></span><br>
-            <strong>Country: </strong><span th:text=""${user.country}></span>
+            <strong>Country: </strong><span th:text="${user.country}"></span>
         </p>
 
         <p th:if="${error != null}" style="color: red;">

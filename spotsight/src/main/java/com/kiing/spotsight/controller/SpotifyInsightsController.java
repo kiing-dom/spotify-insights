@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.kiing.spotsight.service.auth.SpotifyAuthService;
 import com.kiing.spotsight.service.user.SpotifyUserService;
 
+import reactor.core.publisher.Mono;
+
 @Controller
 public class SpotifyInsightsController {
     
@@ -32,25 +34,16 @@ public class SpotifyInsightsController {
     }
 
     @GetMapping("/user-profile")
-public String getUserProfile(@RequestParam(value = "accessToken", required = false) String accessToken, Model model) {
+public Mono<String> getUserProfile(@RequestParam(value = "accessToken", required = false) String accessToken, Model model) {
     // Attempt to retrieve the stored token if none is provided
     if (accessToken == null || accessToken.isEmpty()) {
         accessToken = spotifyAuthService.getStoredAccessToken();
     }
-
-    // If no token is available at all, ask the user to provide one
-    if (accessToken == null || accessToken.isEmpty()) {
-        model.addAttribute("error", "Access token is required. Please provide a valid token.");
-        return "userProfile";
-    }
-
     // Fetch the user profile with the available token
-    spotifyUserService.getUserProfile(accessToken)
+    return spotifyUserService.getUserProfile(accessToken)
         .doOnNext(user -> model.addAttribute("user", user))
         .doOnError(e -> model.addAttribute("error", e.getMessage()))
-        .subscribe();
-
-    return "userProfile";
+        .thenReturn("userProfile");
 }
 
 }
