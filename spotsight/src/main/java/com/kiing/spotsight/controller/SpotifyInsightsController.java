@@ -32,7 +32,14 @@ public class SpotifyInsightsController {
     }
 
     @GetMapping("user-profile")
-    public String getUserProfile(@RequestParam("accessToken") String accessToken, Model model) {
+    public String getUserProfile(Model model) {
+        String accessToken = spotifyAuthService.getStoredAccessToken();
+
+        if(accessToken == null || accessToken.isEmpty()) {
+            model.addAttribute("error", "Couldn't retrieve access token. Try authenticating again");
+            return "error";
+        }
+
         spotifyUserService.getUserProfile(accessToken)
             .doOnNext(user -> model.addAttribute("user", user))
             .doOnError(e -> model.addAttribute("error", e.getMessage()))
