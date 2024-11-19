@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get User Profile</title>
+</head>
+<body>
+    <h1>Get User Profile</h1>
+    <form action="/user-profile" method="post">
+        <label for="accessToken">Access Token: </label>
+        <input type="text" id="accessToken" name="accessToken" required>
+        <button type="submit"> Get Profile </button>
+    </form>
+
+    <div>
+        <h2>Profile Information</h2>
+        <p th:if="${user != null}">
+            <strong>Name: </strong><span th:text="${user.displayName}"></span><br>
+            <strong>Country: </strong><span th:text=""${user.country}></span>
+        </p>
+
+        <p th:if="${error != null}" style="color: red;">
+            Error: <span th:text="${error}"></span>
+        </p>
+    </div>
+</body>
+</html>
