@@ -7,10 +7,12 @@
 </head>
 <body>
     <h1>Get User Profile</h1>
-    <form action="/user-profile" method="post">
-        <label for="accessToken">Access Token: </label>
-        <input type="text" id="accessToken" name="accessToken" required>
-        <button type="submit"> Get Profile </button>
+    <form action="/user-profile" method="get" th:if="${user == null}">
+        <p>
+            <label for="accessToken">Access Token: </label>
+            <input type="text" id="accessToken" name="accessToken" required>
+            <button type="submit">Retrieve Profile</button>
+        </p>
     </form>
 
     <div>

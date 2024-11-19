@@ -31,20 +31,26 @@ public class SpotifyInsightsController {
         return "authenticate";
     }
 
-    @GetMapping("user-profile")
-    public String getUserProfile(Model model) {
-        String accessToken = spotifyAuthService.getStoredAccessToken();
+    @GetMapping("/user-profile")
+public String getUserProfile(@RequestParam(value = "accessToken", required = false) String accessToken, Model model) {
+    // Attempt to retrieve the stored token if none is provided
+    if (accessToken == null || accessToken.isEmpty()) {
+        accessToken = spotifyAuthService.getStoredAccessToken();
+    }
 
-        if(accessToken == null || accessToken.isEmpty()) {
-            model.addAttribute("error", "Couldn't retrieve access token. Try authenticating again");
-            return "error";
-        }
-
-        spotifyUserService.getUserProfile(accessToken)
-            .doOnNext(user -> model.addAttribute("user", user))
-            .doOnError(e -> model.addAttribute("error", e.getMessage()))
-            .subscribe();
-
+    // If no token is available at all, ask the user to provide one
+    if (accessToken == null || accessToken.isEmpty()) {
+        model.addAttribute("error", "Access token is required. Please provide a valid token.");
         return "userProfile";
     }
+
+    // Fetch the user profile with the available token
+    spotifyUserService.getUserProfile(accessToken)
+        .doOnNext(user -> model.addAttribute("user", user))
+        .doOnError(e -> model.addAttribute("error", e.getMessage()))
+        .subscribe();
+
+    return "userProfile";
+}
+
 }
