@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 
 @Controller
 public class SpotifyInsightsController {
-    
+
     private final SpotifyAuthService spotifyAuthService;
     private final SpotifyUserService spotifyUserService;
 
@@ -34,16 +34,32 @@ public class SpotifyInsightsController {
     }
 
     @GetMapping("/user-profile")
-public Mono<String> getUserProfile(@RequestParam(value = "accessToken", required = false) String accessToken, Model model) {
-    // Attempt to retrieve the stored token if none is provided
-    if (accessToken == null || accessToken.isEmpty()) {
-        accessToken = spotifyAuthService.getStoredAccessToken();
+    public Mono<String> getUserProfile(@RequestParam(value = "accessToken", required = false) String accessToken,
+            Model model) {
+        // Attempt to retrieve the stored token if none is provided
+        if (accessToken == null || accessToken.isEmpty()) {
+            accessToken = spotifyAuthService.getStoredAccessToken();
+        }
+        // Fetch the user profile with the available token
+        return spotifyUserService.getUserProfile(accessToken)
+                .doOnNext(user -> model.addAttribute("user", user))
+                .doOnError(e -> model.addAttribute("error", e.getMessage()))
+                .thenReturn("userProfile");
     }
-    // Fetch the user profile with the available token
-    return spotifyUserService.getUserProfile(accessToken)
-        .doOnNext(user -> model.addAttribute("user", user))
-        .doOnError(e -> model.addAttribute("error", e.getMessage()))
-        .thenReturn("userProfile");
-}
 
+    @GetMapping("/top-artists")
+    public String getTopArtists(@RequestParam(value = "timeRange", defaultValue = "medium_term") String timeRange,
+            @RequestParam(value = "limit", defaultValue = "5") int limit,
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            Model model) {
+        String accessToken = spotifyAuthService.getStoredAccessToken();
+
+        spotifyUserService.getTopArtists(accessToken, timeRange, limit, offset)
+                .collectList()
+                .doOnNext(artists -> model.addAttribute("artists", artists))
+                .doOnError(e -> model.addAttribute("error", e.getMessage()))
+                .block();
+
+        return "top-artists";
+    }
 }
