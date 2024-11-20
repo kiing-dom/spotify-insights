@@ -62,4 +62,21 @@ public class SpotifyInsightsController {
 
         return "top-artists";
     }
+
+    @GetMapping("/top-tracks")
+    public String getTopTracks(@RequestParam(value = "timeRange", defaultValue = "medium_term") String timeRange,
+            @RequestParam(value = "limit", defaultValue = "5") int limit,
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            Model model) {
+
+        String accessToken = spotifyAuthService.getStoredAccessToken();
+
+        spotifyUserService.getTopTracks(accessToken, timeRange, limit, offset)
+                .collectList()
+                .doOnNext(tracks -> model.addAttribute("tracks", tracks))
+                .doOnError(e -> model.addAttribute("error", e.getMessage()))
+                .block();
+
+        return "top-tracks";
+    }
 }
