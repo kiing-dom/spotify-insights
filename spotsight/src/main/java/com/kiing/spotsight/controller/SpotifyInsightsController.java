@@ -48,35 +48,38 @@ public class SpotifyInsightsController {
     }
 
     @GetMapping("/top-artists")
-    public String getTopArtists(@RequestParam(value = "timeRange", defaultValue = "medium_term") String timeRange,
+    public Mono<String> getTopArtists(@RequestParam(value = "timeRange", defaultValue = "medium_term") String timeRange,
             @RequestParam(value = "limit", defaultValue = "5") int limit,
             @RequestParam(value = "offset", defaultValue = "0") int offset,
             Model model) {
         String accessToken = spotifyAuthService.getStoredAccessToken();
 
-        spotifyUserService.getTopArtists(accessToken, timeRange, limit, offset)
+        return spotifyUserService.getTopArtists(accessToken, timeRange, limit, offset)
                 .collectList()
-                .doOnNext(artists -> model.addAttribute("artists", artists))
+                .doOnNext(artists -> {
+                    if (artists.isEmpty()) {
+                        model.addAttribute("error", "No top artists found.");
+                    } else {
+                        model.addAttribute("artists", artists);
+                    }
+                })
                 .doOnError(e -> model.addAttribute("error", e.getMessage()))
-                .block();
-
-        return "top-artists";
+                .thenReturn("top-artists");
+        
     }
 
     @GetMapping("/top-tracks")
-    public String getTopTracks(@RequestParam(value = "timeRange", defaultValue = "medium_term") String timeRange,
+    public Mono<String> getTopTracks(@RequestParam(value = "timeRange", defaultValue = "medium_term") String timeRange,
             @RequestParam(value = "limit", defaultValue = "5") int limit,
             @RequestParam(value = "offset", defaultValue = "0") int offset,
             Model model) {
 
         String accessToken = spotifyAuthService.getStoredAccessToken();
 
-        spotifyUserService.getTopTracks(accessToken, timeRange, limit, offset)
+        return spotifyUserService.getTopTracks(accessToken, timeRange, limit, offset)
                 .collectList()
                 .doOnNext(tracks -> model.addAttribute("tracks", tracks))
                 .doOnError(e -> model.addAttribute("error", e.getMessage()))
-                .block();
-
-        return "top-tracks";
+                .thenReturn("top-tracks");
     }
 }

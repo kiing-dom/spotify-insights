@@ -1,38 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Top Artists</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Get Top Artists</h1>
 
     <form action="/top-artists" method="get">
-        <label for="timeRange">Time Range:</label>
-        <select name="timeRange" id="timeRange">
-            <option value="short_term">Short Term</option>
-            <option value="medium_term">Medium Term</option>
-            <option value="long_term">Long Term</option>
-        </select>
+      <label for="timeRange">Time Range:</label>
+      <select name="timeRange" id="timeRange">
+        <option value="short_term">Short Term</option>
+        <option value="medium_term">Medium Term</option>
+        <option value="long_term">Long Term</option>
+      </select>
 
-        <label for="limit">Limit:</label>
-        <input type="number" id="limit" name="limit" value="5">
+      <label for="limit">Limit:</label>
+      <input type="number" id="limit" name="limit" value="5" />
 
-        <label for="offset">Offset:</label>
-        <input type="offset" name="offset" id="offset" value="0">
+      <label for="offset">Offset:</label>
+      <input type="offset" name="offset" id="offset" value="0" />
 
-        <button type="submit">Get Artists</button>
+      <button type="submit">Get Artists</button>
     </form>
 
     <div>
-        <h2>Results</h2>
-        <p th:if="${error != null}" style="color : red;">Error: <span th:text="${error}"></span></p>
+      <h2>Results</h2>
+      <p th:if="${error != null}" style="color: red">
+        Error: <span th:text="${error}"></span>
+      </p>
 
-        <ul th:if="${artists != null}">
-            <li th:each="artist : ${artists}"></li>
-            <strong th:text="${artist.name}"></strong>
-        </ul>
+      <ul th:if="${artists != null}">
+        <li th:each="artist : ${artists}">
+          <strong th:text="${artist.name}"></strong>
+        </li>
+      </ul>
     </div>
-</body>
+  </body>
 </html>
