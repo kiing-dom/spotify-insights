@@ -24,5 +24,15 @@
 
         <button type="submit">Get Artists</button>
     </form>
+
+    <div>
+        <h2>Results</h2>
+        <p th:if="${error != null}" style="color : red;">Error: <span th:text="${error}"></span></p>
+
+        <ul th:if="$artists{ != null}">
+            <li th:each=" "artist : ${artists}></li>
+            <strong th:text="${artist.name}"></strong>
+        </ul>
+    </div>
 </body>
 </html>
