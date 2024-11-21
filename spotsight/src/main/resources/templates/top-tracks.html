@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Top Tracks</title>
+  </head>
+  <body>
+    <h1>Get Top Tracks</h1>
+
+    <form action="/top-tracks" method="get">
+      <label for="timeRange">Time Range:</label>
+      <select name="timeRange" id="timeRange">
+        <option value="short_term">Short Term</option>
+        <option value="medium_term">Medium Term</option>
+        <option value="long_term">Long Term</option>
+      </select>
+
+      <label for="limit">Limit:</label>
+      <input type="number" id="limit" name="limit" value="5" />
+
+      <label for="offset">Offset:</label>
+      <input type="number" id="offset" name="offset" value="0" />
+
+      <button type="submit">Get Tracks</button>
+    </form>
+
+    <div>
+      <h2>Results</h2>
+      <p th:if="${error} != null" style="color: red">
+        Error: <span th:text="{error}"></span>
+      </p>
+
+      <ul th:if="${tracks != null}">
+        <li th:each="track : ${tracks}">
+          <strong th:text="${track.name}"></strong>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
