@@ -65,7 +65,7 @@ public class SpotifyInsightsController {
                 })
                 .doOnError(e -> model.addAttribute("error", e.getMessage()))
                 .thenReturn("top-artists");
-        
+
     }
 
     @GetMapping("/top-tracks")
